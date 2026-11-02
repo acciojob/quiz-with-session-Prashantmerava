@@ -1,7 +1,61 @@
 //your JS code here.
 
+// Get HTML elements
+const questionsElement = document.getElementById("questions");
+const submitButton = document.getElementById("submit");
+const scoreElement = document.getElementById("score");
+
+// Restore previously saved answers
+let userAnswers = JSON.parse(
+    sessionStorage.getItem("progress") || "{}"
+);
+
+// Save answers whenever user selects an option
+questionsElement.addEventListener("change", function(event) {
+
+    if (event.target.type === "radio") {
+
+        let index = event.target.name.split("-")[1];
+
+        userAnswers[index] = event.target.value;
+
+        sessionStorage.setItem(
+            "progress",
+            JSON.stringify(userAnswers)
+        );
+    }
+
+});
+
+// Restore previous score after page refresh
+let savedScore = localStorage.getItem("score");
+
+if (savedScore !== null) {
+    scoreElement.innerText = `Your score is ${savedScore} out of 5.`;
+}
+
+// Submit quiz and calculate score
+submitButton.addEventListener("click", function() {
+
+    let score = 0;
+
+    for (let i = 0; i < questions.length; i++) {
+
+        if (userAnswers[i] === questions[i].answer) {
+            score++;
+        }
+
+    }
+
+    // Save final score
+    localStorage.setItem("score", score);
+
+    // Display score
+    scoreElement.innerText = `Your score is ${score} out of 5.`;
+
+});
+
 // Do not change code below this line
-// This code will just display the questions to the screen
 const questions = [
   {
     question: "What is the capital of France?",
